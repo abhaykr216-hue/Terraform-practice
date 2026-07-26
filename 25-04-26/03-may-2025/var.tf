@@ -1,0 +1,3 @@
+variable "x" {
+  default = "abhaykr"
+}
