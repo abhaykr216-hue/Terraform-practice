@@ -21,6 +21,11 @@ module "azurerm_public_ip" {
     pips = var.jio-pip
   
 }
+module "azurerm_network_security_group" {
+    depends_on = [ module.resoure_group ]
+    source = "../child module/azure_nsg"
+    nsgs = var.jio-nsg
+}
 # module "azurerm_network_interface" {
 #   depends_on = [ module.resoure_group,module.subnets,module.virtual_network ]
 #   source = "../child module/azure_nic"
@@ -32,7 +37,7 @@ module "azurerm_bastion_host" {
   bastion = var.jio-bastion
 }
 module "azurerm_linux_virtual_machine" {
-  depends_on = [ module.subnets ]
+  depends_on = [ module.subnets, module.azurerm_network_security_group ]
   source = "../child module/azure_nic"
   nics = var.jio-vms
 }

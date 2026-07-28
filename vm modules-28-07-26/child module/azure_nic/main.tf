@@ -10,6 +10,19 @@ resource "azurerm_network_interface" "nic" {
     # public_ip_address_id = data.azurerm_public_ip.pip[each.key].id
   }
 }
+
+data "azurerm_network_security_group" "jio-nsg" {
+  for_each = var.nics
+  name                = each.value.nsg_name
+  resource_group_name = each.value.resource_group_name
+}
+
+resource "azurerm_network_interface_security_group_association" "nic_nsg" {
+  for_each = var.nics
+  network_interface_id      = azurerm_network_interface.nic[each.key].id
+  network_security_group_id = data.azurerm_network_security_group.jio-nsg[each.key].id
+}
+
 resource "azurerm_linux_virtual_machine" "vm" {
   for_each = var.nics
   name                = each.value.vm_name
@@ -29,14 +42,14 @@ resource "azurerm_linux_virtual_machine" "vm" {
   # }
 
   os_disk {
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
+    caching              = each.value.os_disk_caching
+    storage_account_type = each.value.os_disk_storage_account_type
   }
 
   source_image_reference {
-  publisher = "Canonical"
-  offer      = "ubuntu-24_04-lts"
-  sku         = "server"
-  version     = "latest"
-}
+    publisher = each.value.image_publisher
+    offer     = each.value.image_offer
+    sku       = each.value.image_sku
+    version   = each.value.image_version
+  }
 }

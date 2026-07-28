@@ -16,6 +16,9 @@ variable "jio-pip" {
 variable "jio-bastion" {
   
 }
+variable "jio-nsg" {
+  
+}
 variable "jio-vms" {
   
 }
