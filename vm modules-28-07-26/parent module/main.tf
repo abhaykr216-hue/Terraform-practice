@@ -37,7 +37,19 @@ module "azurerm_bastion_host" {
   bastion = var.jio-bastion
 }
 module "azurerm_linux_virtual_machine" {
-  depends_on = [ module.subnets, module.azurerm_network_security_group ]
+  depends_on = [ module.subnets, module.azurerm_network_security_group, module.azurerm_key_vault ]
   source = "../child module/azure_nic"
   nics = var.jio-vms
+  
+}
+
+module "azurerm_nat_gateway" {
+  depends_on = [ module.subnets, module.azurerm_public_ip ]
+  source = "../child module/azure_nat"
+    nat-gateways = var.jio-nat-gateway
+}
+module "azurerm_key_vault" {
+  depends_on = [ module.resoure_group ]
+  source = "../child module/azure-kayvault"
+  keyvaults = var.jio-keyvault
 }

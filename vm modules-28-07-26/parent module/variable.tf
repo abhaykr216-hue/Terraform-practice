@@ -22,3 +22,9 @@ variable "jio-nsg" {
 variable "jio-vms" {
   
 }
+variable "jio-nat-gateway" {
+  
+}
+variable "jio-keyvault" {
+  
+}
